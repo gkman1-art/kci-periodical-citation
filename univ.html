@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>대학사 연구는 무엇을 사료로 쓰는가</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css"/>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+:root{
+ --bg:#f6f7fb; --card:#ffffff; --ink:#1d1f33; --muted:#6b7088; --line:#e7e9f2;
+ --news:#3b6fe0; --mag:#e0683b; --accent:#4f46e5; --sedae:#0f9d8f; --sedae2:#e6faf7;
+ --good:#2f9e44; --warn:#e8590c;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+ font-family:Pretendard,system-ui,-apple-system,"Segoe UI",Roboto,"Apple SD Gothic Neo",sans-serif;
+ line-height:1.65;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+a{color:var(--accent);text-decoration:none}
+/* hero */
+.hero{background:linear-gradient(135deg,#1d1f33 0%,#34306b 60%,#4f46e5 100%);color:#fff;padding:54px 0 64px}
+.hero .wrap{max-width:1080px}
+.tag{display:inline-block;font-size:13px;letter-spacing:.04em;background:rgba(255,255,255,.14);
+ padding:5px 12px;border-radius:999px;margin-bottom:16px}
+.hero h1{font-size:34px;line-height:1.25;margin:0 0 10px;font-weight:800}
+.hero p{font-size:16px;color:#d7d9f0;margin:0;max-width:760px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:30px}
+.stat{background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.16);border-radius:14px;padding:18px}
+.stat .v{font-size:30px;font-weight:800;line-height:1}
+.stat .l{font-size:13px;color:#cfd2ee;margin-top:8px}
+/* nav */
+nav.sticky{position:sticky;top:0;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);
+ border-bottom:1px solid var(--line);z-index:20}
+nav.sticky .wrap{display:flex;gap:18px;overflow-x:auto;padding:12px 20px;font-size:14px;font-weight:600}
+nav.sticky a{color:var(--muted);white-space:nowrap}
+nav.sticky a:hover{color:var(--accent)}
+/* sections */
+section{padding:46px 0;border-bottom:1px solid var(--line)}
+h2{font-size:24px;font-weight:800;margin:0 0 6px;display:flex;align-items:center;gap:10px}
+h2 .num{font-size:14px;color:#fff;background:var(--accent);width:28px;height:28px;border-radius:8px;
+ display:inline-flex;align-items:center;justify-content:center;font-weight:700}
+.sub{color:var(--muted);margin:0 0 22px;font-size:15px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;margin:16px 0;
+ box-shadow:0 1px 2px rgba(20,20,50,.03)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.findings{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.finding{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--accent);
+ border-radius:10px;padding:16px}
+.finding b{display:block;font-size:15px;margin-bottom:6px}
+.finding p{margin:0;font-size:14px;color:#43465e}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{padding:8px 10px;text-align:right;border-bottom:1px solid var(--line)}
+th:first-child,td:first-child{text-align:left}
+th{color:var(--muted);font-weight:600;font-size:12.5px;border-bottom:2px solid var(--line)}
+tbody tr:hover{background:#fafbff}
+.rank{color:var(--muted);width:26px}
+.bar{height:8px;border-radius:4px;background:var(--news);display:inline-block;vertical-align:middle}
+.chip{display:inline-block;font-size:12.5px;background:#eef0fb;color:#3a3d63;border-radius:999px;
+ padding:3px 10px;margin:3px 4px 3px 0}
+.chip.s{background:var(--sedae2);color:#0b6b61}
+.note{font-size:13.5px;color:var(--muted)}
+.kfig{font-size:15px}
+blockquote{margin:10px 0;padding:10px 14px;background:#fafbff;border-left:3px solid var(--mag);
+ border-radius:0 8px 8px 0;font-size:13.5px;color:#3a3d63}
+/* heatmap */
+.heat{display:grid;grid-template-columns:46px repeat(12,1fr);gap:3px;font-size:11px}
+.heat .hd{color:var(--muted);text-align:center;padding:2px 0}
+.heat .yr{color:var(--muted);text-align:right;padding-right:6px;line-height:18px}
+.cell{height:18px;border-radius:3px;background:#eef0f6}
+.legend{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);margin-top:10px}
+.legend .sw{width:16px;height:12px;border-radius:3px}
+.sedae-band{background:var(--sedae2);border:1px solid #bdeae3}
+.events{font-size:12.5px;color:var(--muted);margin-top:8px;line-height:1.9}
+.events b{color:var(--sedae)}
+.can: {position:relative}
+.cwrap{position:relative;height:300px}
+.rowlbl{font-size:12px;color:var(--muted);font-weight:700;margin:10px 0 2px;letter-spacing:.02em}
+.fbtns{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
+.fbtn{font-size:13px;font-weight:600;padding:6px 15px;border:1px solid var(--line);background:#fff;border-radius:999px;cursor:pointer;color:var(--muted)}
+.fbtn.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+.frlist{list-style:none;margin:6px 0 0;padding:0;font-size:13px}
+.frlist li{display:flex;align-items:center;gap:8px;padding:3px 0;border-bottom:1px solid var(--line)}
+.frn{flex:0 0 86px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.frbar{height:8px;border-radius:4px;display:inline-block;flex:0 0 auto}
+.frc{margin-left:auto;color:var(--ink);font-variant-numeric:tabular-nums;white-space:nowrap}
+.frc small{color:var(--muted)}
+.mtabs{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0 14px}
+.mtab{font-size:14px;font-weight:700;padding:9px 18px;border:1px solid #bdeae3;background:#fff;border-radius:10px;cursor:pointer;color:var(--muted)}
+.mtab.on{background:var(--sedae);color:#fff;border-color:var(--sedae)}
+.mstats{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.ms{text-align:center}
+.ms .msv{font-size:24px;font-weight:800}
+.ms .msl{font-size:12px;color:var(--muted);margin-top:3px}
+.fbar{display:flex;height:14px;border-radius:7px;overflow:hidden;margin-top:6px;background:var(--line)}
+.fbar span{display:block;height:100%}
+.ctoggle{display:flex;gap:6px;flex-wrap:wrap;margin:2px 0 12px}
+.ctog{font-size:12.5px;font-weight:700;padding:5px 13px;border-radius:999px;cursor:pointer;border:1.5px solid var(--c);color:var(--c);background:#fff}
+.ctog.on{background:var(--c);color:#fff}
+.ctog.off{opacity:.45;text-decoration:line-through}
+.clist{display:flex;flex-direction:column;gap:8px;font-size:14px}
+.clrow{display:flex;align-items:center;gap:10px}
+.clsw{width:14px;height:14px;border-radius:4px;flex:none}
+.cln{flex:1;font-weight:600}
+.clv{color:var(--muted);font-size:13px;font-variant-numeric:tabular-nums}
+@media(max-width:760px){.clist{font-size:13px}}
+@media(max-width:760px){.mstats{grid-template-columns:repeat(3,1fr)}}
+.two{display:grid;grid-template-columns:1.3fr 1fr;gap:16px;align-items:start}
+footer{padding:30px 0 60px;color:var(--muted);font-size:13px}
+@media(max-width:760px){.stats{grid-template-columns:repeat(2,1fr)}.findings{grid-template-columns:1fr}
+ .grid2,.two{grid-template-columns:1fr}.hero h1{font-size:26px}.heat{font-size:9px}}
+</style>
+</head>
+<body>
+<header class="hero"><div class="wrap">
+<div class="tag">KCI 전문 코퍼스 148,514편 · 일간지 700만 건 · 대학신문 11.6만 건</div>
+<h1>대학사 연구는 무엇을 사료로 쓰는가</h1>
+<p>대학의 역사를 다룬 논문 136편의 본문과 각주를 전수 검토하고, 같은 시기 일간지와 대학신문의 지면을 맞대어
+측정했다. 연구자가 실제로 여는 자료와, 그 자료가 비추지 않는 자리를 함께 본다.</p>
+<div class="stats">
+ <div class="stat"><div class="v">73.5%</div><div class="l">대학사 논문 중 일간지를 사료로 인용</div></div>
+ <div class="stat"><div class="v">29.4%</div><div class="l">대학 자체 매체를 인용</div></div>
+ <div class="stat"><div class="v">7.6배</div><div class="l">일간지의 서울 대 지방 호명 격차</div></div>
+ <div class="stat"><div class="v">8.7배</div><div class="l">타 대학을 보는 정도, 지방지 대 중앙지</div></div>
+</div></div></header>
+
+<nav class="sticky"><div class="wrap">
+<a href="#s1">1 사료 사용</a><a href="#s2">2 서울과 지방</a><a href="#s3">3 대학신문의 시야</a>
+<a href="#s4">4 이름 없는 다수</a><a href="#s5">5 방법과 한계</a><a href="./index.html">← 신문·잡지 인용 지도</a>
+</div></nav>
+
+<section id="s1"><div class="wrap">
+<h2><span class="num">1</span>대학사 논문은 어떤 사료를 쓰는가</h2>
+<p class="sub">한국 근현대 대학의 역사를 서술 대상으로 삼은 논문 136편의 본문·각주 전문 약 540만 자에서,
+매체명이 날짜 표기와 40자 이내로 인접한 경우만 인용으로 계수했다.</p>
+<div class="grid2">
+ <div class="card"><div class="cwrap" style="height:260px"><canvas id="c1"></canvas></div></div>
+ <div class="card"><div class="cwrap" style="height:260px"><canvas id="c2"></canvas></div></div>
+</div>
+<div class="findings">
+ <div class="finding"><b>일간지가 압도적이다</b><p>100편(73.5%)이 일간지를 사료로 인용했다. 대학이 스스로 발행한 매체는 40편(29.4%)에 그친다.</p></div>
+ <div class="finding"><b>한쪽만 보는 연구가 일곱 배</b><p>일간지에 기대면서 대학 매체는 보지 않은 논문이 70편, 그 반대는 10편이다.</p></div>
+ <div class="finding"><b>격차는 줄지 않았다</b><p>대학 매체 인용률은 2010년대 26~28%에서 2020년대 전반 36%로 올랐으나, 같은 기간 일간지(72~80%)의 절반에 못 미친다.</p></div>
+</div>
+<div class="card"><div class="cwrap" style="height:280px"><canvas id="c3"></canvas></div></div>
+</div></section>
+
+<section id="s2"><div class="wrap">
+<h2><span class="num">2</span>일간지가 부르는 대학, 부르지 않는 대학</h2>
+<p class="sub">조선·동아·경향 세 신문이 1954~1995년에 실은 기사 약 700만 건의 제목에서 대학 20곳의 호명 횟수를 세었다.</p>
+<div class="card"><div class="cwrap" style="height:340px"><canvas id="c4"></canvas></div></div>
+<div class="grid2">
+ <div class="card"><table><thead><tr><th>서울 10곳</th><th>3지 합계</th><th>조선</th><th>동아</th><th>경향</th></tr></thead>
+ <tbody><tr><td>서울대</td><td>12,849</td><td>3,756</td><td>3,868</td><td>5,225</td></tr><tr><td>연세대</td><td>3,439</td><td>1,226</td><td>817</td><td>1,396</td></tr><tr><td>고려대</td><td>1,658</td><td>627</td><td>300</td><td>731</td></tr><tr><td>이화여대</td><td>2,126</td><td>587</td><td>323</td><td>1,216</td></tr><tr><td>성균관대</td><td>623</td><td>232</td><td>85</td><td>306</td></tr><tr><td>한양대</td><td>2,282</td><td>700</td><td>477</td><td>1,105</td></tr><tr><td>중앙대</td><td>1,794</td><td>621</td><td>373</td><td>800</td></tr><tr><td>경희대</td><td>2,481</td><td>746</td><td>557</td><td>1,178</td></tr><tr><td>서강대</td><td>1,178</td><td>374</td><td>283</td><td>521</td></tr><tr><td>건국대</td><td>844</td><td>277</td><td>155</td><td>412</td></tr></tbody></table></div>
+ <div class="card"><table><thead><tr><th>지방 10곳</th><th>3지 합계</th><th>조선</th><th>동아</th><th>경향</th></tr></thead>
+ <tbody><tr><td>부산대</td><td>583</td><td>160</td><td>197</td><td>226</td></tr><tr><td>경북대</td><td>570</td><td>159</td><td>194</td><td>217</td></tr><tr><td>전남대</td><td>685</td><td>204</td><td>235</td><td>246</td></tr><tr><td>충남대</td><td>404</td><td>116</td><td>129</td><td>159</td></tr><tr><td>전북대</td><td>293</td><td>84</td><td>79</td><td>130</td></tr><tr><td>강원대</td><td>227</td><td>60</td><td>65</td><td>102</td></tr><tr><td>충북대</td><td>184</td><td>52</td><td>49</td><td>83</td></tr><tr><td>경상대</td><td>182</td><td>61</td><td>51</td><td>70</td></tr><tr><td>제주대</td><td>160</td><td>44</td><td>54</td><td>62</td></tr><tr><td>동아대</td><td>560</td><td>131</td><td>182</td><td>247</td></tr></tbody></table></div>
+</div>
+<div class="findings">
+ <div class="finding"><b>서울 29,274건 대 지방 3,848건</b><p>같은 열 곳씩인데 7.6배 차이가 난다.</p></div>
+ <div class="finding"><b>서울대 한 곳이 지방 열 곳의 3.3배</b><p>서울대만 12,849건으로, 지방 열 곳을 모두 합한 것보다 세 배 많다.</p></div>
+ <div class="finding"><b>지방대끼리는 고르게 낮다</b><p>전남대 685·부산대 583·경북대 570건으로 편차가 작다. 특정 대학의 사정이 아니라 구조다.</p></div>
+</div>
+</div></section>
+
+<section id="s3"><div class="wrap">
+<h2><span class="num">3</span>대학신문은 다른 대학을 보는가</h2>
+<p class="sub">서울대 『대학신문』과 부산대 『부대신문』이 1954~1995년 제목에서 다른 대학을 호명한 횟수.
+발행 주체 자신에 대한 언급은 제외했다.</p>
+<div class="grid2">
+ <div class="card"><div class="cwrap" style="height:280px"><canvas id="c5"></canvas></div></div>
+ <div class="card"><div class="cwrap" style="height:280px"><canvas id="c6"></canvas></div></div>
+</div>
+<div class="findings">
+ <div class="finding"><b>중앙지는 아무도 보지 않는다</b><p>『대학신문』의 타 대학 언급은 42년 동안 66건, 최다가 경북대·연세대 각 7건이다. 서울 아홉 곳 합계(37건)가 지방 열 곳 합계(29건)와 큰 차이가 없다.</p></div>
+ <div class="finding"><b>지방지는 전국을 본다</b><p>『부대신문』은 383건으로 서울대 83·동아대 58·경북대 52건이 이어진다.</p></div>
+ <div class="finding"><b>지면 규모를 맞추면 8.7배</b><p>1,000건당 9.49건 대 1.09건. 편중이 아니라 자기 대학 바깥에 대한 무관심이다.</p></div>
+</div>
+</div></section>
+
+<section id="s4"><div class="wrap">
+<h2><span class="num">4</span>이름 없는 다수는 어디에 쌓이는가</h2>
+<p class="sub">두 신문의 서명 기사 40,102건에서 필자명을 정규화해 집계했다.</p>
+<div class="card"><div class="cwrap" style="height:220px"><canvas id="c7"></canvas></div></div>
+<div class="findings">
+ <div class="finding"><b>필자 14,871명 중 67%가 단 한 편</b><p>생애에 걸쳐 한 편만 남긴 이가 10,022명이다.</p></div>
+ <div class="finding"><b>지방대에서 더 심하다</b><p>『대학신문』 57%인 데 비해 『부대신문』은 83%가 단발 필자다.</p></div>
+ <div class="finding"><b>두 축이 겹치는 자리</b><p>추적되지 않는 다수가 가장 두껍게 쌓인 지면이, 일간지가 가장 보지 않는 지면이다.</p></div>
+</div>
+</div></section>
+
+<section id="s5"><div class="wrap">
+<h2><span class="num">5</span>방법과 한계</h2>
+<div class="card">
+<p><b>표본 구성.</b> 역사·사회학·교육사학 학술지에서 제목에 '대학·고등교육·전문학교·대학생'이 든 논문 684편을
+기계 추출하고, 검증된 오탐 유형을 자동 배제한 581편을 필자가 제목·초록으로 전수 판독해 136편을 남겼다.
+배제한 것은 대학 글쓰기·교양교육 방법론, 대학박물관 운영, 해외 대학의 한국학 현황, 재학생 설문 연구,
+'난징대학살'처럼 표기만 겹치는 사례, 그리고 조선시대 성균관 연구와 외국 대학 연구다. 뒤의 둘은 비교 대상인
+한국 일간지·대학 매체가 존재하지 않았거나 인용될 이유가 없어, 표본에 넣으면 양쪽 비율이 함께 낮아진다.</p>
+<p><b>정제의 효과.</b> 같은 측정이 표본에 따라 크게 달라졌다. 오염 표본 420편에서는 34.3% 대 13.8%였으나,
+판독 후 142편에서 64.8% 대 29.6%, 한국 근현대로 한정한 136편에서 73.5% 대 29.4%가 되었다.</p>
+<p><b>한계.</b> 판독은 필자 단독으로 수행했으며 경계 사례에는 재량이 개입한다. 매체명의 표기 변이를 완전히
+통제하지 못했으므로 절대 비율은 하한이나, 그 제약은 일간지와 대학 매체에 같은 방향으로 작용한다. 시기별
+표본(18·43·50편)이 작아 추세는 단정하기 어렵다. 일간지 집계에서 성균관대는 당대에 '成大'로 줄여 쓰인 사례가
+많아 과소집계되었을 수 있다.</p>
+</div>
+</div></section>
+
+<footer style="padding:34px 0;color:var(--muted);font-size:14px"><div class="wrap">
+KCI 등재 학술지 전문 코퍼스(148,514편·377종)와 조선·동아·경향 기사 전문, 서울대 『대학신문』·부산대
+『부대신문』 전수 색인에 기초함. · <a href="./index.html">학술논문의 신문·잡지 인용 지도 (1954–1979)</a>
+</div></footer>
+
+<script>
+const D = {"daily_univ": {"서울대": 12849, "연세대": 3439, "고려대": 1658, "이화여대": 2126, "성균관대": 623, "한양대": 2282, "중앙대": 1794, "경희대": 2481, "서강대": 1178, "건국대": 844, "부산대": 583, "경북대": 570, "전남대": 685, "충남대": 404, "전북대": 293, "강원대": 227, "충북대": 184, "경상대": 182, "제주대": 160, "동아대": 560}, "daily_by_paper": {"서울대": {"조선일보": 3756, "동아일보": 3868, "경향신문": 5225}, "연세대": {"조선일보": 1226, "동아일보": 817, "경향신문": 1396}, "고려대": {"조선일보": 627, "동아일보": 300, "경향신문": 731}, "이화여대": {"조선일보": 587, "동아일보": 323, "경향신문": 1216}, "성균관대": {"조선일보": 232, "동아일보": 85, "경향신문": 306}, "한양대": {"조선일보": 700, "동아일보": 477, "경향신문": 1105}, "중앙대": {"조선일보": 621, "동아일보": 373, "경향신문": 800}, "경희대": {"조선일보": 746, "동아일보": 557, "경향신문": 1178}, "서강대": {"조선일보": 374, "동아일보": 283, "경향신문": 521}, "건국대": {"조선일보": 277, "동아일보": 155, "경향신문": 412}, "부산대": {"조선일보": 160, "동아일보": 197, "경향신문": 226}, "경북대": {"조선일보": 159, "동아일보": 194, "경향신문": 217}, "전남대": {"조선일보": 204, "동아일보": 235, "경향신문": 246}, "충남대": {"조선일보": 116, "동아일보": 129, "경향신문": 159}, "전북대": {"조선일보": 84, "동아일보": 79, "경향신문": 130}, "강원대": {"조선일보": 60, "동아일보": 65, "경향신문": 102}, "충북대": {"조선일보": 52, "동아일보": 49, "경향신문": 83}, "경상대": {"조선일보": 61, "동아일보": 51, "경향신문": 70}, "제주대": {"조선일보": 44, "동아일보": 54, "경향신문": 62}, "동아대": {"조선일보": 131, "동아일보": 182, "경향신문": 247}}, "busan_year": {"1954": 9, "1955": 2, "1956": 2, "1957": 6, "1958": 5, "1959": 6, "1960": 20, "1961": 9, "1962": 11, "1963": 13, "1964": 8, "1965": 8, "1966": 5, "1967": 7, "1968": 6, "1969": 13, "1970": 4, "1971": 30, "1972": 10, "1973": 25, "1974": 17, "1975": 21, "1976": 7, "1977": 14, "1978": 17, "1979": 24, "1980": 29, "1981": 15, "1982": 13, "1983": 18, "1984": 8, "1985": 21, "1986": 17, "1987": 47, "1988": 9, "1989": 17, "1990": 17, "1991": 24, "1992": 11, "1993": 9, "1994": 10, "1995": 19}, "seoul_year": {"1954": 29, "1955": 35, "1956": 60, "1957": 62, "1958": 29, "1959": 53, "1960": 60, "1961": 123, "1962": 121, "1963": 137, "1964": 165, "1965": 218, "1966": 162, "1967": 178, "1968": 157, "1969": 179, "1970": 278, "1971": 602, "1972": 250, "1973": 373, "1974": 313, "1975": 406, "1976": 250, "1977": 232, "1978": 272, "1979": 279, "1980": 464, "1981": 415, "1982": 364, "1983": 421, "1984": 745, "1985": 788, "1986": 780, "1987": 436, "1988": 390, "1989": 334, "1990": 311, "1991": 391, "1992": 435, "1993": 418, "1994": 547, "1995": 587}, "src_mix": {"일간지": [100, 1958], "관찬 학교사": [46, 168], "관보·행정문서": [46, 318], "대학 자체 매체": [40, 547]}, "n_papers": 136, "venn": {"일간지만": 70, "대학매체만": 10, "둘 다": 30, "없음": 26}, "period": {"2010~14": [18, 13, 5], "2015~19": [43, 31, 11], "2020~24": [50, 40, 18]}, "cross": {"대학신문": {"total": 66, "per_mille": 1.09, "top": [["경북대", 7], ["연세대", 7], ["전남대", 6], ["중앙대", 6], ["한양대", 6], ["고려대", 5], ["부산대", 5]]}, "부대신문": {"total": 383, "per_mille": 9.49, "top": [["서울대", 83], ["동아대", 58], ["경북대", 52], ["전남대", 30], ["연세대", 29], ["한양대", 17], ["고려대", 15]]}}, "authors": {"대학신문": {"total": 8812, "one": 4996, "many": 1371}, "부대신문": {"total": 6142, "one": 5108, "many": 121}}};
+const SEOUL = ["서울대", "연세대", "고려대", "이화여대", "성균관대", "한양대", "중앙대", "경희대", "서강대", "건국대"], LOCAL = ["부산대", "경북대", "전남대", "충남대", "전북대", "강원대", "충북대", "경상대", "제주대", "동아대"];
+Chart.defaults.font.family = 'Pretendard,system-ui,sans-serif';
+Chart.defaults.color = '#6b7088';
+Chart.defaults.maintainAspectRatio = false;
+const pct = v => v + '%';
+
+new Chart(c1, {type:'bar', data:{labels:Object.keys(D.src_mix),
+  datasets:[{data:Object.values(D.src_mix).map(v => +(v[0]/D.n_papers*100).toFixed(1)),
+  backgroundColor:['#3b6fe0','#8b95b8','#8b95b8','#e0683b']}]},
+  options:{indexAxis:'y', plugins:{legend:{display:false},
+  title:{display:true,text:'사료군별 인용 논문 비율 (136편 중)'}},
+  scales:{x:{max:100, ticks:{callback:pct}}}}});
+
+new Chart(c2, {type:'doughnut', data:{labels:Object.keys(D.venn),
+  datasets:[{data:Object.values(D.venn), backgroundColor:['#3b6fe0','#e0683b','#6f42c1','#c9cde0']}]},
+  options:{plugins:{title:{display:true,text:'일간지와 대학 매체, 무엇을 보았나'},
+  legend:{position:'bottom'}}}});
+
+new Chart(c3, {type:'bar', data:{labels:Object.keys(D.period),
+  datasets:[{label:'일간지', data:Object.values(D.period).map(v => +(v[1]/v[0]*100).toFixed(0)), backgroundColor:'#3b6fe0'},
+            {label:'대학 매체', data:Object.values(D.period).map(v => +(v[2]/v[0]*100).toFixed(0)), backgroundColor:'#e0683b'}]},
+  options:{plugins:{title:{display:true,text:'발표 시기별 인용률 — 격차는 좁혀지지 않았다'}},
+  scales:{y:{max:100, ticks:{callback:pct}}}}});
+
+const uk = SEOUL.concat(LOCAL);
+new Chart(c4, {type:'bar', data:{labels:uk,
+  datasets:[{data:uk.map(u => D.daily_univ[u]),
+  backgroundColor:uk.map(u => SEOUL.indexOf(u) >= 0 ? '#3b6fe0' : '#e0683b')}]},
+  options:{plugins:{legend:{display:false},
+  title:{display:true,text:'1954–1995년 일간지 제목에 오른 대학 (파랑 서울 · 주황 지방, 로그 축)'}},
+  scales:{y:{type:'logarithmic'}}}});
+
+function cross(id, key, color) {
+  const t = D.cross[key].top;
+  new Chart(id, {type:'bar', data:{labels:t.map(x => x[0]),
+    datasets:[{data:t.map(x => x[1]), backgroundColor:color}]},
+    options:{indexAxis:'y', plugins:{legend:{display:false},
+    title:{display:true, text:'\u300e' + key + '\u300f\uac00 \ubd80\ub978 \ub2e4\ub978 \ub300\ud559 \u2014 \ucd1d ' + D.cross[key].total + '\uac74 (' + D.cross[key].per_mille + '\u2030)'}}}});
+}
+cross(c5, '대학신문', '#3b6fe0');
+cross(c6, '부대신문', '#e0683b');
+
+new Chart(c7, {type:'bar', data:{labels:['\u300e대학신문\u300f','\u300e부대신문\u300f'],
+  datasets:[{label:'단발 필자(1편)', data:[D.authors['대학신문'].one, D.authors['부대신문'].one], backgroundColor:'#e0683b'},
+            {label:'그 밖', data:[D.authors['대학신문'].total - D.authors['대학신문'].one,
+                                 D.authors['부대신문'].total - D.authors['부대신문'].one], backgroundColor:'#c9cde0'}]},
+  options:{indexAxis:'y', plugins:{title:{display:true,text:'필자 구성 — 단발 필자의 비중'}},
+  scales:{x:{stacked:true}, y:{stacked:true}}}});
+</script>
+</body></html>
