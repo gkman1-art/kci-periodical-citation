@@ -106,6 +106,18 @@ blockquote{margin:10px 0;padding:10px 14px;background:#fafbff;border-left:3px so
 @media(max-width:760px){.clist{font-size:13px}}
 @media(max-width:760px){.mstats{grid-template-columns:repeat(3,1fr)}}
 .two{display:grid;grid-template-columns:1.3fr 1fr;gap:16px;align-items:start}
+/* §1 기사 대 기사 — 독립 블록(이전에는 .findings 3열 그리드 안에 중첩되어 표가 눌렸다) */
+.xblock{margin-top:30px;padding-top:24px;border-top:1px solid var(--line)}
+.xblock h3{font-size:20px;font-weight:800;margin:0 0 6px}
+.xblock h4{font-size:15.5px;font-weight:700;margin:0 0 6px}
+.findings2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px}
+.finding.fw{margin:14px 0}
+.tscroll{overflow-x:auto}
+.tscroll table{min-width:340px}
+/* 그리드 항목의 기본 min-width:auto 탓에 표가 칸을 밀어내지 않도록 */
+.grid2>*,.two>*,.findings>*,.findings2>*{min-width:0}
+/* 막대 값 라벨 */
+@media(max-width:760px){.findings2{grid-template-columns:1fr}}
 footer{padding:30px 0 60px;color:var(--muted);font-size:13px}
 @media(max-width:760px){.stats{grid-template-columns:repeat(2,1fr)}.findings{grid-template-columns:1fr}
  .grid2,.two{grid-template-columns:1fr}.hero h1{font-size:26px}.heat{font-size:9px}}
@@ -140,40 +152,44 @@ footer{padding:30px 0 60px;color:var(--muted);font-size:13px}
  <div class="card"><div class="cwrap" style="height:260px"><canvas id="c2"></canvas></div></div>
 </div>
 <div class="findings">
- 
-<section id="xmatch">
-<h2>기사 대 기사 — 무엇이 어느 쪽에만 있는가</h2>
-<p class="lede">호명 빈도는 가시성의 지표일 뿐이다. 두 매체에 실린 기사를 하나씩 맞대면
-어느 쪽에만 있는 기록이 무엇인지가 직접 드러난다. 판정은 자동 후보 제시 뒤 사람이 확인했다.</p>
-<div class="grid2">
-<div><h3>정방향 · 『부대신문』 전면 25,463건</h3>
-<p>일간지에 대응 보도가 없는 비율(고유율). 표본 150건 육안 검증 <b>97.3%</b>(진짜 대응 4건), 자동 판정 91.4%. 1면 머리기사 부분집합은 90.8%.</p>
-<table><thead><tr><th>유형</th><th>건수</th><th>고유율</th></tr></thead><tbody><tr><td>텍스트형</td><td>2,717</td><td>93.1%</td></tr><tr><td>교내 사건</td><td>20,988</td><td>91.6%</td></tr><tr><td>대외 접점</td><td>1,758</td><td>86.1%</td></tr></tbody></table></div>
-<div><h3>역방향 · 일간지의 부산대 표제 기사 221건</h3>
-<p>『부대신문』에 대응 기사가 있는 비율은 <b>48.9%</b>.
-포함관계는 성립하지 않으며, 빠진 절반은 시위·공안과 사건·사고에 쏠린다.</p>
-<table><thead><tr><th>주제</th><th>건수</th><th>대응</th><th>비율</th></tr></thead><tbody><tr><td>인사·조직</td><td>57</td><td>39</td><td>68.4%</td></tr><tr><td>체육</td><td>25</td><td>15</td><td>60.0%</td></tr><tr><td>기타</td><td>79</td><td>34</td><td>43.0%</td></tr><tr><td>입시·학사</td><td>25</td><td>10</td><td>40.0%</td></tr><tr><td>시위·공안</td><td>23</td><td>7</td><td>30.4%</td></tr><tr><td>학술·행사</td><td>7</td><td>2</td><td>28.6%</td></tr><tr><td>사건·사고</td><td>5</td><td>1</td><td>20.0%</td></tr></tbody></table></div>
-</div>
-<div class="finding"><b>강건성 — 서울대 『대학신문』은?</b><p>같은 정방향 대조를 『대학신문』 전면 40,333건에도 적용했다. 서울대 언급 일간지 풀은 52,801건(부산대의 11배). 자동 고유율은 68.3%로 낮게 나오나 대부분 풀 확대에 따른 복합어 오탐이며, 표본 150건 육안 검증(진짜 대응 8건)에서는 약 95%로 『부대신문』(97%)과 큰 차이가 없다. 캠퍼스 매체의 고유성은 서울·지방을 막론하며, 지방 프리미엄은 실제 대응율(서울 5.3% 대 부산 2.7%)에서 작게, 호명 빈도·필자 구성에서 크게 나타난다.</p></div>
-<div class="finding"><b>두 개의 침묵</b><p>일간지의 공백은 거리에서, 대학신문의 공백은 위치에서 온다.
-가까이 있어서 일상을 남길 수 있고, 가까이 있어서 대학의 치부와 국가가 금한 것을 쓰지 못한다.</p></div>
-</section>
-<div class="finding" style="border-left:3px solid #b45309"><b>2026-07-22 수치 정정</b><p>이전 집계는 배제어를 한글로만 두어 국한문 혼용 지면의 <code>釜山大邱</code>(부산·대구)·<code>釜山大火</code>·<code>釜山大會</code> 등을 대학 호명으로 잘못 셌고, 이화여대만 약칭 <code>梨大</code>를 포함해 다른 대학과 기준이 어긋나 있었습니다. 한자·한글 배제 목록을 분리 적용해 전면 재집계했습니다. 서울 10곳 12,755→11,524건, 지방 10곳 1,680→1,571건, 배율 7.6→7.3배, 이화여대 1,164→224건.</p></div><div class="finding"><b>여전히 일간지가 앞선다</b><p>35편(74.5%)이 일간지를, 27편(57.4%)이 대학 자체 매체를 인용했다. 두 매체가 모두 남아 있고 열람에 제약이 없는 시기다.</p></div>
+ <div class="finding"><b>여전히 일간지가 앞선다</b><p>35편(74.5%)이 일간지를, 27편(57.4%)이 대학 자체 매체를 인용했다. 두 매체가 모두 남아 있고 열람에 제약이 없는 시기다.</p></div>
  <div class="finding"><b>한쪽만 보면 두 배 넘게 기운다</b><p>일간지에만 기댄 논문이 13편, 그 반대는 5편이다. 둘 다 본 논문은 22편, 어느 쪽도 안 본 논문은 7편이다.</p></div>
  <div class="finding"><b>대학 매체로의 이동은 진행 중</b><p>대학 매체 인용률은 2010년대 초 44%에서 2020년대 전반 73%로 올랐다. 표본이 작아 기울기는 단정할 수 없으나 방향은 분명하다.</p></div>
 </div>
+<div class="finding fw" style="border-left:3px solid #b45309"><b>2026-07-22 수치 정정</b><p>이전 집계는 배제어를 한글로만 두어 국한문 혼용 지면의 <code>釜山大邱</code>(부산·대구)·<code>釜山大火</code>·<code>釜山大會</code> 등을 대학 호명으로 잘못 셌고, 이화여대만 약칭 <code>梨大</code>를 포함해 다른 대학과 기준이 어긋나 있었습니다. 한자·한글 배제 목록을 분리 적용해 전면 재집계했습니다. 서울 10곳 12,755→11,524건, 지방 10곳 1,680→1,571건, 배율 7.6→7.3배, 이화여대 1,164→224건.</p></div>
 <div class="card"><div class="cwrap" style="height:280px"><canvas id="c3"></canvas></div></div>
+
+<section id="xmatch" class="xblock">
+<h3>기사 대 기사 — 무엇이 어느 쪽에만 있는가</h3>
+<p class="sub">호명 빈도는 가시성의 지표일 뿐이다. 두 매체에 실린 기사를 하나씩 맞대면
+어느 쪽에만 있는 기록이 무엇인지가 직접 드러난다. 판정은 자동 후보 제시 뒤 사람이 확인했다.</p>
+<div class="grid2">
+<div class="card"><h4>정방향 · 『부대신문』 전면 25,463건</h4>
+<p>일간지에 대응 보도가 없는 비율(고유율). 표본 150건 육안 검증 <b>97.3%</b>(진짜 대응 4건), 자동 판정 91.4%. 1면 머리기사 부분집합은 90.8%.</p>
+<div class="tscroll"><table><thead><tr><th>유형</th><th>건수</th><th>고유율</th></tr></thead><tbody><tr><td>텍스트형</td><td>2,717</td><td>93.1%</td></tr><tr><td>교내 사건</td><td>20,988</td><td>91.6%</td></tr><tr><td>대외 접점</td><td>1,758</td><td>86.1%</td></tr></tbody></table></div></div>
+<div class="card"><h4>역방향 · 일간지의 부산대 표제 기사 221건</h4>
+<p>『부대신문』에 대응 기사가 있는 비율은 <b>48.9%</b>.
+포함관계는 성립하지 않으며, 빠진 절반은 시위·공안과 사건·사고에 쏠린다.</p>
+<div class="tscroll"><table><thead><tr><th>주제</th><th>건수</th><th>대응</th><th>비율</th></tr></thead><tbody><tr><td>인사·조직</td><td>57</td><td>39</td><td>68.4%</td></tr><tr><td>체육</td><td>25</td><td>15</td><td>60.0%</td></tr><tr><td>기타</td><td>79</td><td>34</td><td>43.0%</td></tr><tr><td>입시·학사</td><td>25</td><td>10</td><td>40.0%</td></tr><tr><td>시위·공안</td><td>23</td><td>7</td><td>30.4%</td></tr><tr><td>학술·행사</td><td>7</td><td>2</td><td>28.6%</td></tr><tr><td>사건·사고</td><td>5</td><td>1</td><td>20.0%</td></tr></tbody></table></div></div>
+</div>
+<div class="findings2">
+<div class="finding"><b>강건성 — 서울대 『대학신문』은?</b><p>같은 정방향 대조를 『대학신문』 전면 40,333건에도 적용했다. 서울대 언급 일간지 풀은 52,801건(부산대의 11배). 자동 고유율은 68.3%로 낮게 나오나 대부분 풀 확대에 따른 복합어 오탐이며, 표본 150건 육안 검증(진짜 대응 8건)에서는 약 95%로 『부대신문』(97%)과 큰 차이가 없다. 캠퍼스 매체의 고유성은 서울·지방을 막론하며, 지방 프리미엄은 실제 대응율(서울 5.3% 대 부산 2.7%)에서 작게, 호명 빈도·필자 구성에서 크게 나타난다.</p></div>
+<div class="finding"><b>두 개의 침묵</b><p>일간지의 공백은 거리에서, 대학신문의 공백은 위치에서 온다.
+가까이 있어서 일상을 남길 수 있고, 가까이 있어서 대학의 치부와 국가가 금한 것을 쓰지 못한다.</p></div>
+</div>
+</section>
 </div></section>
 
 <section id="s2"><div class="wrap">
 <h2><span class="num">2</span>일간지가 부르는 대학, 부르지 않는 대학</h2>
-<p class="sub">조선·동아·경향 세 신문이 1954~1979년에 실은 기사 3,507,095건의 제목에서 대학 20곳의 호명 횟수를 세었다.</p>
-<div class="card"><div class="cwrap" style="height:340px"><canvas id="c4"></canvas></div></div>
+<p class="sub">조선·동아·경향 세 신문이 1954~1979년에 실은 기사 3,507,095건의 제목에서 대학 20곳의 호명 횟수를 세었다.
+축은 선형이다. 서울대 4,808건과 경상대 28건의 거리를 압축하지 않고 그대로 보인다.</p>
+<div class="card"><div class="cwrap" style="height:420px"><canvas id="c4"></canvas></div></div>
 <div class="grid2">
- <div class="card"><table><thead><tr><th>서울 10곳</th><th>3지 합계</th><th>조선</th><th>동아</th><th>경향</th></tr></thead>
- <tbody><tr><td>서울대</td><td>4,808</td><td>1,390</td><td>1,489</td><td>1,929</td></tr><tr><td>연세대</td><td>1,751</td><td>593</td><td>530</td><td>628</td></tr><tr><td>경희대</td><td>1,374</td><td>431</td><td>309</td><td>634</td></tr><tr><td>한양대</td><td>1,035</td><td>346</td><td>276</td><td>413</td></tr><tr><td>중앙대</td><td>754</td><td>306</td><td>185</td><td>263</td></tr><tr><td>고려대</td><td>595</td><td>236</td><td>119</td><td>240</td></tr><tr><td>건국대</td><td>356</td><td>116</td><td>88</td><td>152</td></tr><tr><td>서강대</td><td>354</td><td>91</td><td>94</td><td>169</td></tr><tr><td>경북대</td><td>320</td><td>97</td><td>115</td><td>108</td></tr><tr><td>성균관대</td><td>273</td><td>121</td><td>58</td><td>94</td></tr><tr><td>동아대</td><td>253</td><td>60</td><td>92</td><td>101</td></tr><tr><td>전남대</td><td>246</td><td>77</td><td>82</td><td>87</td></tr><tr><td>부산대</td><td>228</td><td>63</td><td>82</td><td>83</td></tr><tr><td>이화여대</td><td>224</td><td>105</td><td>29</td><td>90</td></tr><tr><td>충남대</td><td>194</td><td>55</td><td>68</td><td>71</td></tr><tr><td>전북대</td><td>140</td><td>47</td><td>28</td><td>65</td></tr><tr><td>충북대</td><td>59</td><td>16</td><td>17</td><td>26</td></tr><tr><td>강원대</td><td>59</td><td>9</td><td>22</td><td>28</td></tr><tr><td>제주대</td><td>44</td><td>14</td><td>15</td><td>15</td></tr><tr><td>경상대</td><td>28</td><td>7</td><td>8</td><td>13</td></tr></tbody></table></div>
- <div class="card"><table><thead><tr><th>지방 10곳</th><th>3지 합계</th><th>조선</th><th>동아</th><th>경향</th></tr></thead>
- <tbody><tr><td>부산대</td><td>299</td><td>85</td><td>108</td><td>106</td></tr><tr><td>경북대</td><td>326</td><td>98</td><td>116</td><td>112</td></tr><tr><td>전남대</td><td>250</td><td>77</td><td>85</td><td>88</td></tr><tr><td>충남대</td><td>207</td><td>59</td><td>69</td><td>79</td></tr><tr><td>전북대</td><td>142</td><td>47</td><td>28</td><td>67</td></tr><tr><td>강원대</td><td>61</td><td>9</td><td>22</td><td>30</td></tr><tr><td>충북대</td><td>64</td><td>17</td><td>18</td><td>29</td></tr><tr><td>경상대</td><td>28</td><td>7</td><td>8</td><td>13</td></tr><tr><td>제주대</td><td>45</td><td>14</td><td>15</td><td>16</td></tr><tr><td>동아대</td><td>258</td><td>63</td><td>94</td><td>101</td></tr></tbody></table></div>
+ <div class="card"><div class="tscroll"><table><thead><tr><th>서울 10곳</th><th>3지 합계</th><th>조선</th><th>동아</th><th>경향</th></tr></thead>
+ <tbody id="tblSeoul"></tbody><tfoot id="tfSeoul"></tfoot></table></div></div>
+ <div class="card"><div class="tscroll"><table><thead><tr><th>지방 10곳</th><th>3지 합계</th><th>조선</th><th>동아</th><th>경향</th></tr></thead>
+ <tbody id="tblLocal"></tbody><tfoot id="tfLocal"></tfoot></table></div></div>
 </div>
 <div class="findings">
  <div class="finding"><b>서울 11,524건 대 지방 1,571건</b><p>같은 열 곳씩인데 7.3배 차이가 난다.</p></div>
@@ -262,13 +278,53 @@ new Chart(c3, {type:'bar', data:{labels:Object.keys(D.period),
   options:{plugins:{title:{display:true,text:'발표 시기별 인용률 — 격차는 좁혀지지 않았다'}},
   scales:{y:{max:100, ticks:{callback:pct}}}}});
 
+// 서울·지방 두 표를 내장 데이터에서 직접 그린다(정정 때 표가 따로 놀지 않도록).
+function fillTable(tbodyId, tfootId, list) {
+  const rows = list.slice().sort((a, b) => D.daily_univ[b] - D.daily_univ[a]);
+  const n = v => v.toLocaleString('ko-KR');
+  document.getElementById(tbodyId).innerHTML = rows.map(u => {
+    const p = D.daily_by_paper[u];
+    return '<tr><td>' + u + '</td><td>' + n(D.daily_univ[u]) + '</td><td>' + n(p['조선일보']) +
+           '</td><td>' + n(p['동아일보']) + '</td><td>' + n(p['경향신문']) + '</td></tr>';
+  }).join('');
+  const sum = k => rows.reduce((s, u) => s + (k ? D.daily_by_paper[u][k] : D.daily_univ[u]), 0);
+  document.getElementById(tfootId).innerHTML =
+    '<tr style="font-weight:700"><td>합계</td><td>' + n(sum()) + '</td><td>' + n(sum('조선일보')) +
+    '</td><td>' + n(sum('동아일보')) + '</td><td>' + n(sum('경향신문')) + '</td></tr>';
+}
+fillTable('tblSeoul', 'tfSeoul', SEOUL);
+fillTable('tblLocal', 'tfLocal', LOCAL);
+
+// 막대 끝에 실제 값을 적어, 선형 축에서 작은 막대도 수치를 읽을 수 있게 한다.
+const valueLabels = {
+  id: 'valueLabels',
+  afterDatasetsDraw(ch) {
+    const {ctx} = ch;
+    ctx.save();
+    ctx.font = '600 11px Pretendard,system-ui,sans-serif';
+    ctx.fillStyle = '#43465e';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'bottom';
+    ch.getDatasetMeta(0).data.forEach((bar, i) => {
+      const v = ch.data.datasets[0].data[i];
+      ctx.fillText(v.toLocaleString('ko-KR'), bar.x, bar.y - 3);
+    });
+    ctx.restore();
+  }
+};
+
 const uk = SEOUL.concat(LOCAL);
 new Chart(c4, {type:'bar', data:{labels:uk,
   datasets:[{data:uk.map(u => D.daily_univ[u]),
   backgroundColor:uk.map(u => SEOUL.indexOf(u) >= 0 ? '#3b6fe0' : '#e0683b')}]},
-  options:{plugins:{legend:{display:false},
-  title:{display:true,text:'1954–1979년 일간지 제목에 오른 대학 (파랑 서울 · 주황 지방, 로그 축)'}},
-  scales:{y:{type:'logarithmic'}}}});
+  plugins:[valueLabels],
+  options:{layout:{padding:{top:18}},
+  plugins:{legend:{display:false},
+  title:{display:true,text:'1954–1979년 일간지 제목에 오른 대학 (파랑 서울 · 주황 지방)'},
+  tooltip:{callbacks:{label:cx => cx.parsed.y.toLocaleString('ko-KR') + '건'}}},
+  scales:{y:{beginAtZero:true, title:{display:true,text:'호명 건수'},
+    ticks:{callback:v => v.toLocaleString('ko-KR')}},
+   x:{ticks:{maxRotation:60,minRotation:45,autoSkip:false,font:{size:11}}}}}});
 
 // 두 대학신문 비교 — 가로축 최댓값을 공유해 규모 차이를 그대로 보이게 한다.
 const XMAX = Math.max(...Object.values(D.cross).flatMap(c => c.series.map(s => s[1])));
