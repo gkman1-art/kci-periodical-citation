@@ -85,6 +85,19 @@ blockquote{margin:10px 0;padding:10px 14px;background:#fafbff;border-left:3px so
 .frbar{height:8px;border-radius:4px;display:inline-block;flex:0 0 auto}
 .frc{margin-left:auto;color:var(--ink);font-variant-numeric:tabular-nums;white-space:nowrap}
 .frc small{color:var(--muted)}
+/* 매체별 피인용 시점 — 100% 누적 막대 */
+.erow{display:flex;align-items:center;gap:10px;padding:5px 0;border-bottom:1px solid var(--line);font-size:13px}
+.erow:last-child{border-bottom:0}
+.en{flex:0 0 92px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600}
+.ebar{flex:1;display:flex;height:16px;border-radius:4px;overflow:hidden;background:var(--line);gap:1px;min-width:0}
+.ebar span{display:block;height:100%}
+.emed{flex:0 0 84px;text-align:right;font-variant-numeric:tabular-nums;color:var(--muted);white-space:nowrap}
+.emed b{color:var(--ink);font-variant-numeric:tabular-nums}
+.eleg{display:flex;flex-wrap:wrap;gap:12px;margin-top:12px;font-size:12px;color:var(--muted);align-items:center}
+.eleg i{display:inline-block;width:13px;height:11px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+.ehd{display:flex;gap:10px;font-size:11.5px;color:var(--muted);padding-bottom:5px;border-bottom:2px solid var(--line)}
+.ehd .en{font-weight:600}
+@media(max-width:760px){.en{flex-basis:70px}.emed{flex-basis:64px}}
 .mtabs{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0 14px}
 .mtab{font-size:14px;font-weight:700;padding:9px 18px;border:1px solid #bdeae3;background:#fff;border-radius:10px;cursor:pointer;color:var(--muted)}
 .mtab.on{background:var(--sedae);color:#fff;border-color:var(--sedae)}
@@ -163,12 +176,28 @@ footer{padding:30px 0 60px;color:var(--muted);font-size:13px}
  <p class="sub" id="news-sub"></p>
  <div class="card"><b>상위 신문 (1954~79년 발행분)</b><div id="newsTable"></div>
   <p class="note" id="news-manner"></p></div>
+ <div class="card"><b>신문별 피인용 시점 — 어느 시기 지면이 인용되나</b>
+  <p class="note" style="margin:4px 0 10px">매체마다 인용되는 시기가 다르다. 발행 기간이 다르기도 하고, 연구자가 그 신문을 어떤 시대의 사료로 삼는지가 다르기도 하다.
+   각 막대는 그 신문 인용에 나타난 발행연도 표기를 100%로 놓고 시기별 비중을 보인 것이며, 오른쪽은 그 분포의 중앙값이다.
+   대상은 §1의 정의대로 1954~79년 발행분을 인용한 레코드이므로, 한 각주가 여러 시기를 함께 적은 경우 그 바깥 연도까지 집계에 들어간다 —
+   『매일신보』의 ~1944년 편중이나 1980년대 이후 꼬리는 대체로 그런 병기(倂記)에서 온다.</p>
+  <div class="ehd"><div class="en">신문</div><div style="flex:1">시기 구성</div><div class="emed">중앙값</div></div>
+  <div id="eraNews"></div>
+  <div class="eleg" id="eraLegend"></div>
+ </div>
 </section>
 
 <section id="mag"><h2><span class="num">4</span>잡지 인용</h2>
  <p class="sub" id="mag-sub"></p>
  <div class="card"><b>상위 잡지 (1954~79년 발행분)</b><div id="magTable"></div>
   <p class="note">호(號) 단위 인용 — 필자 + 「글 제목」 + 통권/연월 + 쪽. 월간이라 완전일자는 드묾.</p></div>
+ <div class="card"><b>잡지별 피인용 시점 — 어느 시기 지면이 인용되나</b>
+  <p class="note" style="margin:4px 0 10px">잡지는 창간·폐간 시점이 뚜렷해 시기 구성이 매체의 수명을 그대로 드러낸다.
+   1953년 창간한 『사상계』는 1960년대에, 1966년 창간한 『창작과비평』은 1970년대에 인용이 몰린다.</p>
+  <div class="ehd"><div class="en">잡지</div><div style="flex:1">시기 구성</div><div class="emed">중앙값</div></div>
+  <div id="eraMag"></div>
+  <div class="eleg" id="eraLegend2"></div>
+ </div>
 </section>
 
 <section id="mags" style="background:var(--sedae2);margin:0 -20px;padding:46px 20px;border-radius:0">
@@ -267,6 +296,29 @@ function rankTable(el,rows,color){
 }
 rankTable($('newsTable'),DATA.news.table,'var(--news)');
 rankTable($('magTable'),DATA.mag.table,'var(--mag)');
+
+// ── 매체별 피인용 시점 (100% 누적 막대) ─────────────────────────────
+const ERA_BY_MEDIA = {"ord": ["~1944", "1945-59", "1960년대", "1970년대", "1980 이후"], "신문": [{"n": "동아일보", "m": 26442, "t": 59392, "med": 1962, "dom": "1960년대", "ds": 37, "p": [10.9, 24.0, 36.6, 20.8, 7.8]}, {"n": "경향신문", "m": 20338, "t": 40538, "med": 1964, "dom": "1960년대", "ds": 43, "p": [1.7, 24.7, 42.9, 23.3, 7.5]}, {"n": "조선일보", "m": 14073, "t": 29561, "med": 1962, "dom": "1960년대", "ds": 37, "p": [8.8, 28.0, 36.5, 18.7, 8.0]}, {"n": "로동신문", "m": 2877, "t": 7579, "med": 1959, "dom": "1945-59", "ds": 54, "p": [1.0, 54.1, 28.0, 5.9, 11.0]}, {"n": "한국일보", "m": 2130, "t": 5078, "med": 1962, "dom": "1945-59", "ds": 31, "p": [4.7, 31.5, 30.9, 20.5, 12.5]}, {"n": "중앙일보", "m": 1584, "t": 3962, "med": 1971, "dom": "1970년대", "ds": 35, "p": [9.6, 11.9, 21.6, 35.2, 21.7]}, {"n": "서울신문", "m": 1496, "t": 3692, "med": 1959, "dom": "1945-59", "ds": 51, "p": [3.0, 50.5, 27.5, 9.8, 9.2]}, {"n": "문학신문", "m": 1242, "t": 3354, "med": 1959, "dom": "1945-59", "ds": 49, "p": [1.8, 49.2, 39.0, 0.7, 9.3]}, {"n": "人民日報", "m": 986, "t": 2330, "med": 1963, "dom": "1945-59", "ds": 40, "p": [1.6, 39.7, 32.2, 15.4, 11.1]}, {"n": "부산일보", "m": 890, "t": 2757, "med": 1960, "dom": "1945-59", "ds": 32, "p": [14.1, 32.3, 21.7, 15.6, 16.4]}, {"n": "매일신보", "m": 769, "t": 4820, "med": 1940, "dom": "~1944", "ds": 59, "p": [59.0, 11.7, 14.8, 5.9, 8.6]}, {"n": "일경제신문", "m": 600, "t": 1239, "med": 1971, "dom": "1970년대", "ds": 49, "p": [1.5, 2.3, 34.5, 48.6, 13.2]}, {"n": "국제신보", "m": 559, "t": 1048, "med": 1960, "dom": "1960년대", "ds": 48, "p": [3.6, 31.0, 47.8, 11.3, 6.3]}, {"n": "朝日新聞", "m": 460, "t": 1325, "med": 1972, "dom": "1980 이후", "ds": 31, "p": [8.0, 10.6, 23.8, 26.7, 30.8]}], "잡지": [{"n": "사상계", "m": 6157, "t": 9600, "med": 1960, "dom": "1960년대", "ds": 58, "p": [1.0, 33.6, 57.6, 5.1, 2.7]}, {"n": "현대문학", "m": 3485, "t": 6046, "med": 1963, "dom": "1960년대", "ds": 37, "p": [3.5, 33.1, 37.3, 16.1, 10.1]}, {"n": "세대", "m": 1667, "t": 2537, "med": 1966, "dom": "1960년대", "ds": 63, "p": [2.5, 3.7, 63.1, 24.1, 6.6]}, {"n": "여원", "m": 1291, "t": 2245, "med": 1960, "dom": "1945-59", "ds": 47, "p": [1.0, 47.3, 40.7, 6.7, 4.4]}, {"n": "신동아", "m": 1224, "t": 2372, "med": 1968, "dom": "1960년대", "ds": 47, "p": [5.2, 4.0, 46.6, 32.2, 12.0]}, {"n": "창작과비평", "m": 1194, "t": 2823, "med": 1970, "dom": "1970년대", "ds": 44, "p": [1.0, 3.1, 27.0, 44.4, 24.5]}, {"n": "문학사상", "m": 1061, "t": 1934, "med": 1975, "dom": "1970년대", "ds": 64, "p": [6.2, 4.3, 4.9, 63.8, 20.8]}, {"n": "청맥", "m": 619, "t": 1167, "med": 1965, "dom": "1960년대", "ds": 83, "p": [0.3, 2.1, 83.3, 4.5, 9.9]}, {"n": "신천지", "m": 199, "t": 513, "med": 1954, "dom": "1945-59", "ds": 73, "p": [5.1, 72.9, 9.6, 4.5, 8.0]}, {"n": "문예", "m": 175, "t": 801, "med": 1954, "dom": "1945-59", "ds": 75, "p": [2.7, 75.2, 12.6, 5.0, 4.5]}]};
+const ERA_COLORS = ['#86b6ef','#5598e7','#2a78d6','#1c5cab','#104281'];
+function eraRows(elId, rows){
+  const el = $(elId); if(!el) return;
+  el.innerHTML = rows.map(r => {
+    const segs = r.p.map((v,i) => v > 0
+      ? `<span style="width:${v}%;background:${ERA_COLORS[i]}" title="${ERA_BY_MEDIA.ord[i]} ${v}%"></span>` : '').join('');
+    return `<div class="erow"><div class="en" title="${r.n}">${r.n}</div>`
+      + `<div class="ebar">${segs}</div>`
+      + `<div class="emed"><b>${r.med}</b>년</div></div>`;
+  }).join('');
+}
+function eraLegend(elId){
+  const el = $(elId); if(!el) return;
+  el.innerHTML = ERA_BY_MEDIA.ord
+    .map((k,i) => `<span><i style="background:${ERA_COLORS[i]}"></i>${k}</span>`).join('')
+    + '<span style="margin-left:auto">중앙값 = 피인용 연도 분포의 가운데 값</span>';
+}
+eraRows('eraNews', ERA_BY_MEDIA['신문']);
+eraRows('eraMag',  ERA_BY_MEDIA['잡지']);
+eraLegend('eraLegend'); eraLegend('eraLegend2');
 
 // charts
 const ORD=['~1944','1945-59','1960년대','1970년대','1980년대','1990+'];
